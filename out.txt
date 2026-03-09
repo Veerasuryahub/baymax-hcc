@@ -1,0 +1,15 @@
+commit b420e921d8299cdb8b0bf849b24df06aa389728b
+Author: jayaprakashhub <jayaprakashsmart2003@gmail.com>
+Date:   Thu Jun 19 20:57:09 2025 +0530
+
+    backend update:
+
+diff --git a/backend/.env b/backend/.env
+deleted file mode 100644
+index e6c0e56..0000000
+--- a/backend/.env
++++ /dev/null
+@@ -1,3 +0,0 @@
+-MONGO_URI=mongodb+srv://baymax:baymax@cluster0.bcxn1xy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+-PORT=5000
+-JWT_SECRET=MySuperSecureSecretKey12345

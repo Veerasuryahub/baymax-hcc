@@ -36,9 +36,29 @@ app.get('/health', (req, res) => {
   res.json({ status: 'Backend is running!' });
 });
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+const { MongoMemoryServer } = require('mongodb-memory-server');
+
+async function connectDB() {
+  try {
+    console.log('⏳ Attempting to connect to Primary MongoDB...');
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000 // fail fast if not reachable
+    });
+    console.log('✅ MongoDB connected successfully');
+  } catch (err) {
+    console.error('⚠️ Primary MongoDB connection failed. Falling back to Memory Server:', err.message);
+    try {
+      const mongoServer = await MongoMemoryServer.create();
+      const memoryUri = mongoServer.getUri();
+      await mongoose.connect(memoryUri);
+      console.log('✅ Connected to MongoDB Memory Server (Local Fallback for Dev)');
+    } catch (memErr) {
+      console.error('❌ Failed to start Memory Server fallback:', memErr);
+    }
+  }
+}
+
+connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
