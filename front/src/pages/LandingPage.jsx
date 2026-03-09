@@ -63,7 +63,7 @@ function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section id="home" className="pt-24 min-h-screen bg-[#E03C31] flex flex-col md:flex-row items-center justify-between overflow-hidden relative px-6 md:px-16 py-12">
+      <section id="home" className="pt-24 min-h-screen bg-red-600 flex flex-col md:flex-row items-center justify-between overflow-hidden relative px-6 md:px-16 py-12">
         {/* Left Text */}
         <div className="z-10 max-w-xl text-center md:text-left mt-8 md:mt-0 flex flex-col items-center md:items-start">
           <motion.h1
@@ -102,13 +102,13 @@ function LandingPage() {
           >
             <button
               onClick={() => navigate("/auth")}
-              className="bg-white text-[#E03C31] font-bold px-8 py-4 rounded-full shadow-2xl hover:bg-gray-100 hover:scale-105 transition-all duration-300"
+              className="bg-white text-red-600 font-bold px-8 py-4 rounded-full shadow-2xl hover:bg-gray-100 hover:scale-105 transition-all duration-300"
             >
               Sign In
             </button>
             <button
               onClick={() => navigate("/auth")}
-              className="border-2 border-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-[#E03C31] hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden group"
+              className="border-2 border-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-red-600 hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden group"
             >
               Sign Up
             </button>
