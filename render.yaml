@@ -1,0 +1,30 @@
+services:
+  # Backend Node.js Service
+  - type: web
+    name: baymax-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        sync: false # User needs to provide this in Render dashboard (e.g., MongoDB Atlas URI)
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://baymax-healthcare-chatbot.netlify.app
+
+  # Python Bot Service
+  - type: web
+    name: baymax-bot
+    env: python
+    rootDir: Bot
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PORT
+        value: 5001
+      - key: ALLOWED_ORIGINS
+        value: https://baymax-healthcare-chatbot.netlify.app

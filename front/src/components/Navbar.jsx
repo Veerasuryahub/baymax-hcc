@@ -1,17 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 
 const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <motion.nav
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+    <nav
       className="w-full bg-red-600 text-white flex justify-between items-center px-8 py-3 fixed top-0 left-0 z-50 shadow-md"
-      style={{ minHeight: "48px" }} // reduced height
+      style={{ minHeight: "48px" }}
     >
       <div
         className="text-lg font-bold cursor-pointer select-none"
@@ -36,7 +32,7 @@ const Navbar = () => {
           Sign In
         </button>
       </div>
-    </motion.nav>
+    </nav>
   );
 };
 

@@ -1,1 +1,23 @@
+# Environment variables (secrets)
 /backend/.env
+/Bot/.env
+/front/.env
+
+# Dependencies
+node_modules/
+.venv/
+
+# Build artifacts
+/front/dist/
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

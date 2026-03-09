@@ -1,125 +1,15 @@
-// import React, { useState } from "react";
-// import { addMessageToChat } from "../api/chatApi";
 
-// const ChatWindow = ({ section, sectionIndex, refresh }) => {
-//   const [message, setMessage] = useState("");
-//   const [loading, setLoading] = useState(false);
-
-//   if (!section) return <div className="flex-1 p-6">Select a chat</div>;
-
-//   const handleSend = async () => {
-//     if (message.trim()) {
-//       const userMessage = message;
-//       setMessage("");
-//       setLoading(true);
-
-//       await addMessageToChat(sectionIndex, "user", userMessage);
-
-//       try {
-//         const response = await fetch("http://localhost:5001/predict", {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({ sentence: userMessage }),
-//         });
-
-//         const data = await response.json();
-//         const botText = response.ok
-//           ? `🩺 Predicted Disease: ${data.predicted_disease}\n💊 Treatment: ${data.treatment_recommendation}`
-//           : `❌ Error: ${data.error}`;
-
-//         await addMessageToChat(sectionIndex, "bot", botText);
-//         const utterance = new SpeechSynthesisUtterance(botText.replace(/[\n🔺🩺💊❌]/g, ''));
-//         utterance.lang = 'en-US';
-//         window.speechSynthesis.speak(utterance);
-//       } catch {
-//         await addMessageToChat(sectionIndex, "bot", "❌ Server error.");
-//         const utterance = new SpeechSynthesisUtterance("Server error occurred.");
-//         utterance.lang = 'en-US';
-//         window.speechSynthesis.speak(utterance);
-//       }
-
-//       setLoading(false);
-//       refresh();
-//     }
-//   };
-
-//   const handleVoiceInput = () => {
-//     const recognition = new window.webkitSpeechRecognition();
-//     recognition.lang = "en-US";
-//     recognition.onresult = (event) => {
-//       const transcript = event.results[0][0].transcript;
-//       setMessage(transcript);
-//     };
-//     recognition.start();
-//   };
-
-//   return (
-// <div className="flex-1 flex items-center justify-center h-screen px-4 sm:px-8 md:px-16 bg-gray-100">
-//   <div className="w-full max-w-4xl h-[90vh] bg-white shadow-lg rounded-xl overflow-hidden flex flex-col">
-//     <div className="flex-1 p-4 flex flex-col">
-//       <div className="flex-1 overflow-y-auto mb-4 space-y-2">
-//         {section.messages.map((msg, index) => (
-//           <div
-//             key={index}
-//             className={`whitespace-pre-line p-3 rounded-lg max-w-[75%] ${
-//               msg.sender === "user"
-//                 ? "bg-red-500 text-white self-end ml-auto"
-//                 : "bg-gray-100 text-gray-800 self-start"
-//             }`}
-//           >
-//             {msg.text}
-//           </div>
-//         ))}
-//         {loading && (
-//           <div className="bg-gray-100 text-gray-800 p-3 rounded-lg max-w-[75%] self-start">
-//             ⏳ Thinking...
-//           </div>
-//         )}
-//       </div>
-
-//       <div className="flex items-center space-x-2 mt-2">
-//         <textarea
-//           value={message}
-//           onChange={(e) => setMessage(e.target.value)}
-//           placeholder="Type or speak your symptoms..."
-//           rows={2}
-//           className="flex-1 border border-gray-300 rounded-md p-3 resize-none"
-//         />
-//         <button
-//           onClick={handleSend}
-//           className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
-//         >
-//           Send
-//         </button>
-//         <button
-//           onClick={handleVoiceInput}
-//           className="bg-white text-red-500 border border-red-500 px-3 py-2 rounded-md hover:bg-red-100 transition"
-//         >
-//           🎤
-//         </button>
-//       </div>
-//     </div>
-//   </div>
-// </div>
-
-
-//   );
-// };
-
-// export default ChatWindow;
 import React, { useState } from "react";
-import { addMessageToChat,submitReview } from "../api/chatApi";
+import { addMessageToChat, submitReview } from "../api/chatApi";
 import { Star } from "lucide-react";
 import { toast } from "react-toastify";
-import { FaRobot, FaUser } from "react-icons/fa";
 
+const BOT_URL = import.meta.env.VITE_BOT_URL || "http://localhost:5001";
 
 const ChatWindow = ({ section, sectionIndex, refresh }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false); // 👈 New state
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -136,7 +26,7 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
       await addMessageToChat(sectionIndex, "user", userMessage);
 
       try {
-        const response = await fetch("http://localhost:5001/predict", {
+        const response = await fetch(`${BOT_URL}/predict`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -151,23 +41,18 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
 
         await addMessageToChat(sectionIndex, "bot", botText);
 
-        const utterance = new SpeechSynthesisUtterance(botText.replace(/[\n🔺🩺💊❌]/g, ''));
+        const utterance = new SpeechSynthesisUtterance(botText.replace(/[\n\u{1F53A}\u{1FA7A}\u{1F48A}\u{274C}]/gu, ''));
         utterance.lang = 'en-US';
-
-        // 🔊 Track speech status
         utterance.onstart = () => setIsSpeaking(true);
         utterance.onend = () => setIsSpeaking(false);
-
         window.speechSynthesis.speak(utterance);
       } catch {
-        const errorText = "Server error occurred.";
         await addMessageToChat(sectionIndex, "bot", "❌ Server error.");
 
-        const utterance = new SpeechSynthesisUtterance(errorText);
+        const utterance = new SpeechSynthesisUtterance("Server error occurred.");
         utterance.lang = 'en-US';
         utterance.onstart = () => setIsSpeaking(true);
         utterance.onend = () => setIsSpeaking(false);
-
         window.speechSynthesis.speak(utterance);
       }
 
@@ -177,154 +62,150 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
   };
 
   const handleVoiceInput = () => {
-    const recognition = new window.webkitSpeechRecognition();
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      toast.error("Your browser does not support voice input.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsSpeaking(true);
+      toast.success("Listening...", { icon: "🎤" });
+    };
+
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
-      setMessage(transcript);
+      setMessage((prev) => (prev ? prev + " " + transcript : transcript));
     };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error", event.error);
+      toast.error("Microphone error or not allowed.");
+    };
+
+    recognition.onend = () => {
+      setIsSpeaking(false);
+    };
+
     recognition.start();
   };
+
   const handleReviewSubmit = async () => {
-  try {
-    await submitReview(rating, comment);
-    toast.success("Review submitted!");
-    setShowReview(false);
-  } catch (error) {
-    toast.error("Failed to submit review.");
-  }
-};
+    if (!rating || !comment.trim()) {
+      toast.error("Please provide both a rating and a comment.");
+      return;
+    }
+    try {
+      await submitReview(rating, comment);
+      toast.success("Review submitted!");
+      setShowReview(false);
+      setRating(0);
+      setComment("");
+    } catch {
+      toast.error("Failed to submit review.");
+    }
+  };
 
 
   return (
-    // <div className="flex-1 flex items-center justify-center h-screen px-4 sm:px-8 md:px-16 bg-gray-100">
-    //   <div className="w-full max-w-4xl h-[90vh] bg-white shadow-lg rounded-xl overflow-hidden flex flex-col">
-    //     <div className="flex-1 p-4 flex flex-col">
-    //       <div className="flex-1 overflow-y-auto mb-4 space-y-2">
-    //         {section.messages.map((msg, index) => (
-    //           <div
-    //             key={index}
-    //             className={`whitespace-pre-line p-3 rounded-lg max-w-[75%] ${
-    //               msg.sender === "user"
-    //                 ? "bg-red-500 text-white self-end ml-auto"
-    //                 : "bg-gray-100 text-gray-800 self-start"
-    //             }`}
-    //           >
-    //             {msg.text}
-    //           </div>
-    //         ))}
-    //         {loading && (
-    //           <div className="bg-gray-100 text-gray-800 p-3 rounded-lg max-w-[75%] self-start">
-    //             ⏳ Thinking...
-    //           </div>
-    //         )}
-    //       </div>
-
-    //       <div className="flex items-center space-x-2 mt-2">
-    //         <textarea
-    //           value={message}
-    //           onChange={(e) => setMessage(e.target.value)}
-    //           placeholder="Type or speak your symptoms..."
-    //           rows={2}
-    //           className="flex-1 border border-gray-300 rounded-md p-3 resize-none"
-    //         />
-    //         <button
-    //           onClick={handleSend}
-    //           className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
-    //         >
-    //           Send
-    //         </button>
-    //         <button
-    //           onClick={handleVoiceInput}
-    //           className="bg-white text-red-500 border border-red-500 px-3 py-2 rounded-md hover:bg-red-100 transition"
-    //         >
-    //           {isSpeaking ? "🔊" : "🎤"}
-    //         </button>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
-    <div className="relative w-full  bg-gray-100 flex items-center justify-center px-4">
-       <div
-  className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
-  style={{
-    zIndex: 0,
-    fontSize: "18rem",
-    fontWeight: "bold",
-    color: "rgba(255, 49, 49, 0.1)", // subtle red with low opacity
-    filter: "blur(6px)",
-    userSelect: "none",
-    whiteSpace: "nowrap",
-  }}
->
-  BAYMAX
-</div>
+    <div className="relative w-full bg-gray-100 flex items-center justify-center px-4">
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+        style={{
+          zIndex: 0,
+          fontSize: "18rem",
+          fontWeight: "bold",
+          color: "rgba(255, 49, 49, 0.1)",
+          filter: "blur(6px)",
+          userSelect: "none",
+          whiteSpace: "nowrap",
+        }}
+      >
+        BAYMAX
+      </div>
 
       {/* Chat Window */}
-     <div
-  className="w-full max-w-4xl h-[90vh] bg-white shadow-lg rounded-xl overflow-hidden flex flex-col"
-  style={{ zIndex: 10, position: "relative" }}
->
-  {/* Title Bar */}
-  <div className="bg-red-500 text-white text-center text-xl font-bold p-4 rounded-t-xl">
-    BAYMAX Health Assistant 🩺
-  </div>
+      <div
+        className="w-full max-w-4xl h-[90vh] bg-white shadow-lg rounded-xl overflow-hidden flex flex-col"
+        style={{ zIndex: 10, position: "relative" }}
+      >
+        {/* Title Bar */}
+        <div className="bg-red-500 text-white text-center text-xl font-bold p-4 rounded-t-xl">
+          BAYMAX Health Assistant 🩺
+        </div>
 
-  <div className="flex-1 p-4 flex flex-col overflow-y-auto">
-    <div className="flex-1 overflow-y-auto mb-4 space-y-2">
-      {section.messages.map((msg, index) => (
-        <div
-          key={index}
-          className={`flex items-start max-w-[75%] ${
-            msg.sender === "user" ? "self-end ml-auto" : "self-start"
-          }`}
-        >
-          {/* Bot icon on left */}
-          {msg.sender === "bot" && (
-            <img src="/bot.jpg" alt="" className="w-8 h-8 rounded full p-1"/>
-          )}
+        <div className="flex-1 p-4 flex flex-col overflow-y-auto">
+          <div className="flex-1 overflow-y-auto mb-4 space-y-2">
+            {section.messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex items-start max-w-[75%] ${msg.sender === "user" ? "self-end ml-auto" : "self-start"
+                  }`}
+              >
+                {/* Bot icon on left */}
+                {msg.sender === "bot" && (
+                  <div className="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-sm font-bold mr-2 flex-shrink-0">B</div>
+                )}
 
-          {/* Message bubble */}
-          <div
-            className={`whitespace-pre-line p-3 rounded-lg ${
-              msg.sender === "user"
-                ? "bg-red-500 text-white"
-                : "bg-gray-100 text-gray-800"
-            }`}
-          >
-            {msg.text}
+                {/* Message bubble */}
+                <div
+                  className={`whitespace-pre-line p-3 rounded-lg ${msg.sender === "user"
+                    ? "bg-red-500 text-white"
+                    : "bg-gray-100 text-gray-800"
+                    }`}
+                >
+                  {msg.text}
+                </div>
+
+                {/* User icon on right */}
+                {msg.sender === "user" && (
+                  <div className="w-8 h-8 rounded-full bg-gray-500 text-white flex items-center justify-center text-sm font-bold ml-2 flex-shrink-0">U</div>
+                )}
+              </div>
+            ))}
+            {loading && (
+              <div className="bg-gray-100 text-gray-800 p-3 rounded-lg max-w-[75%] self-start animate-pulse">
+                ⏳ Analyzing your symptoms...
+              </div>
+            )}
           </div>
 
-          {/* User icon on right */}
-          {msg.sender === "user" && (
-    <img src="/user.jpg" alt="" className="w-8 h-8 rounded full p-1"/>          )}
+          <div className="flex items-center space-x-2 mt-2">
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+              placeholder="Type or speak your symptoms..."
+              rows={2}
+              className="flex-1 border border-gray-300 rounded-md p-3 resize-none"
+            />
+            <button
+              onClick={handleSend}
+              disabled={loading}
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition disabled:opacity-50"
+            >
+              Send
+            </button>
+            <button
+              onClick={handleVoiceInput}
+              className="bg-white text-red-500 border border-red-500 px-3 py-2 rounded-md hover:bg-red-100 transition"
+            >
+              {isSpeaking ? "🔊" : "🎤"}
+            </button>
+          </div>
         </div>
-      ))}
-    </div>
-
-    <div className="flex items-center space-x-2 mt-2">
-      <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type or speak your symptoms..."
-        rows={2}
-        className="flex-1 border border-gray-300 rounded-md p-3 resize-none"
-      />
-      <button
-        onClick={handleSend}
-        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
-      >
-        Send
-      </button>
-      <button
-        onClick={handleVoiceInput}
-        className="bg-white text-red-500 border border-red-500 px-3 py-2 rounded-md hover:bg-red-100 transition"
-      >
-        {isSpeaking ? "🔊" : "🎤"}
-      </button>
-    </div>
-  </div>
-</div>
+      </div>
 
       {/* Floating Star Button */}
       <button
@@ -342,9 +223,8 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
             {[1, 2, 3, 4, 5].map((star) => (
               <Star
                 key={star}
-                className={`w-6 h-6 cursor-pointer ${
-                  (hoverRating || rating) >= star ? "text-yellow-400" : "text-gray-300"
-                }`}
+                className={`w-6 h-6 cursor-pointer ${(hoverRating || rating) >= star ? "text-yellow-400" : "text-gray-300"
+                  }`}
                 onMouseEnter={() => setHoverRating(star)}
                 onMouseLeave={() => setHoverRating(0)}
                 onClick={() => setRating(star)}
