@@ -63,16 +63,16 @@ function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section id="home" className="pt-24 min-h-screen bg-gradient-to-br from-red-500 to-red-600 flex flex-col md:flex-row items-center justify-between overflow-hidden relative px-6 md:px-16 py-12">
+      <section id="home" className="pt-24 min-h-screen bg-[#E03C31] flex flex-col md:flex-row items-center justify-between overflow-hidden relative px-6 md:px-16 py-12">
         {/* Left Text */}
-        <div className="z-10 max-w-xl text-center md:text-left">
+        <div className="z-10 max-w-xl text-center md:text-left mt-8 md:mt-0 flex flex-col items-center md:items-start">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight"
+            className="text-4xl md:text-7xl font-extrabold mb-4 leading-tight tracking-tight drop-shadow-lg"
           >
-            Hello, I'm <span className="text-white">BAYMAX</span>
+            Hello, I'm <br /><span className="text-white drop-shadow-xl">BAYMAX</span>
           </motion.h1>
 
           {/* Chat bubble */}
@@ -89,7 +89,7 @@ function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-lg md:text-xl mb-6"
+            className="text-lg md:text-2xl mb-8 font-light max-w-lg text-white/90 drop-shadow-sm"
           >
             Your personal healthcare companion — powered by AI & empathy.
           </motion.p>
@@ -102,13 +102,13 @@ function LandingPage() {
           >
             <button
               onClick={() => navigate("/auth")}
-              className="bg-white text-red-500 px-6 py-3 rounded-xl hover:bg-red-100 transition"
+              className="bg-white text-[#E03C31] font-bold px-8 py-4 rounded-full shadow-2xl hover:bg-gray-100 hover:scale-105 transition-all duration-300"
             >
               Sign In
             </button>
             <button
               onClick={() => navigate("/auth")}
-              className="border border-white px-6 py-3 rounded-xl hover:bg-white hover:text-red-500 transition"
+              className="border-2 border-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-[#E03C31] hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden group"
             >
               Sign Up
             </button>
@@ -120,13 +120,15 @@ function LandingPage() {
           initial={{ x: 300, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1 }}
-          className="hidden md:flex items-center justify-center relative w-1/2"
+          className="flex items-center justify-center relative w-full md:w-1/2 mt-12 md:mt-0 w-[250px] md:w-full mx-auto"
         >
           <img
             src={baymaxImg}
             alt="Baymax"
-            className="w-full max-w-md drop-shadow-2xl z-10 hover:scale-105 transition-transform duration-500"
+            className="w-full max-w-sm md:max-w-lg drop-shadow-[0_20px_50px_rgba(0,0,0,0.4)] z-10 hover:scale-105 hover:-translate-y-4 transition-all duration-500 cursor-pointer object-contain"
           />
+          {/* Soft white glow behind baymax */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-white rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
         </motion.div>
       </section>
 

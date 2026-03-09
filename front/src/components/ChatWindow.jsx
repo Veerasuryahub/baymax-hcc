@@ -36,7 +36,7 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
 
         const data = await response.json();
         const botText = response.ok
-          ? `🩺 Predicted Disease: ${data.predicted_disease}\n💊 Treatment: ${data.treatment_recommendation}`
+          ? `**🩺 Predicted Disease:**\n${data.predicted_disease}\n\n**💊 Treatment Recommendation:**\n${data.treatment_recommendation}`
           : `❌ Error: ${data.error}`;
 
         await addMessageToChat(sectionIndex, "bot", botText);
@@ -114,69 +114,71 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
 
 
   return (
-    <div className="relative w-full bg-gray-100 flex items-center justify-center px-4">
-      <div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
-        style={{
-          zIndex: 0,
-          fontSize: "18rem",
-          fontWeight: "bold",
-          color: "rgba(255, 49, 49, 0.1)",
-          filter: "blur(6px)",
-          userSelect: "none",
-          whiteSpace: "nowrap",
-        }}
-      >
-        BAYMAX
-      </div>
+    <div className="relative w-full bg-gray-50 flex items-center justify-center p-4 h-screen">
 
       {/* Chat Window */}
-      <div
-        className="w-full max-w-4xl h-[90vh] bg-white shadow-lg rounded-xl overflow-hidden flex flex-col"
-        style={{ zIndex: 10, position: "relative" }}
-      >
+      <div className="w-full max-w-5xl h-[95vh] bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col border border-gray-100">
+
         {/* Title Bar */}
-        <div className="bg-red-500 text-white text-center text-xl font-bold p-4 rounded-t-xl">
-          BAYMAX Health Assistant 🩺
+        <div className="bg-[#E03C31] text-white flex items-center px-6 py-4 shadow-md z-10">
+          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#E03C31] font-bold text-xl mr-4 shadow-sm">
+            B
+          </div>
+          <div>
+            <h2 className="text-xl font-bold tracking-wide">BAYMAX Assistant</h2>
+            <p className="text-red-100 text-sm opacity-90">Always here to help</p>
+          </div>
         </div>
 
-        <div className="flex-1 p-4 flex flex-col overflow-y-auto">
-          <div className="flex-1 overflow-y-auto mb-4 space-y-2">
+        {/* Chat Area */}
+        <div className="flex-1 p-6 flex flex-col overflow-y-auto bg-gray-50/50">
+          <div className="flex-1 overflow-y-auto mb-4 space-y-6 scrollbar-thin scrollbar-thumb-gray-300">
             {section.messages.map((msg, index) => (
               <div
                 key={index}
-                className={`flex items-start max-w-[75%] ${msg.sender === "user" ? "self-end ml-auto" : "self-start"
-                  }`}
+                className={`flex items-end max-w-[85%] ${msg.sender === "user" ? "self-end ml-auto" : "self-start"}`}
               >
-                {/* Bot icon on left */}
+                {/* Bot Icon */}
                 {msg.sender === "bot" && (
-                  <div className="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-sm font-bold mr-2 flex-shrink-0">B</div>
+                  <div className="w-8 h-8 rounded-full bg-[#E03C31] text-white flex items-center justify-center text-sm font-bold mr-3 shadow-md flex-shrink-0">
+                    B
+                  </div>
                 )}
 
-                {/* Message bubble */}
+                {/* Message Bubble */}
                 <div
-                  className={`whitespace-pre-line p-3 rounded-lg ${msg.sender === "user"
-                    ? "bg-red-500 text-white"
-                    : "bg-gray-100 text-gray-800"
+                  className={`p-4 rounded-2xl shadow-sm text-[15px] leading-relaxed ${msg.sender === "user"
+                      ? "bg-[#E03C31] text-white rounded-br-none"
+                      : "bg-white border border-gray-100 text-gray-800 rounded-bl-none"
                     }`}
-                >
-                  {msg.text}
-                </div>
+                  dangerouslySetInnerHTML={{
+                    __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>')
+                  }}
+                />
 
-                {/* User icon on right */}
+                {/* User Icon */}
                 {msg.sender === "user" && (
-                  <div className="w-8 h-8 rounded-full bg-gray-500 text-white flex items-center justify-center text-sm font-bold ml-2 flex-shrink-0">U</div>
+                  <div className="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center text-sm font-bold ml-3 shadow-md flex-shrink-0">
+                    U
+                  </div>
                 )}
               </div>
             ))}
             {loading && (
-              <div className="bg-gray-100 text-gray-800 p-3 rounded-lg max-w-[75%] self-start animate-pulse">
-                ⏳ Analyzing your symptoms...
+              <div className="flex items-end max-w-[85%] self-start animate-fade-in-up">
+                <div className="w-8 h-8 rounded-full bg-[#E03C31] text-white flex items-center justify-center text-sm font-bold mr-3 shadow-md flex-shrink-0">
+                  B
+                </div>
+                <div className="bg-white border border-gray-100 text-gray-500 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                </div>
               </div>
             )}
           </div>
 
-          <div className="flex items-center space-x-2 mt-2">
+          <div className="flex items-center space-x-3 bg-white p-2 rounded-2xl shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-[#E03C31]/20 focus-within:border-[#E03C31] transition-all">
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -186,22 +188,34 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
                   handleSend();
                 }
               }}
-              placeholder="Type or speak your symptoms..."
-              rows={2}
-              className="flex-1 border border-gray-300 rounded-md p-3 resize-none"
+              placeholder="Type your symptoms here..."
+              rows={1}
+              className="flex-1 bg-transparent border-none focus:ring-0 p-3 resize-none outline-none max-h-32 min-h-[44px]"
             />
             <button
-              onClick={handleSend}
-              disabled={loading}
-              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition disabled:opacity-50"
+              onClick={handleVoiceInput}
+              className="text-gray-400 hover:text-[#E03C31] p-2 rounded-full hover:bg-red-50 transition"
+              title="Voice Input"
             >
-              Send
+              {isSpeaking ? (
+                <span className="relative flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E03C31] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-5 w-5 bg-[#E03C31]"></span>
+                </span>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                </svg>
+              )}
             </button>
             <button
-              onClick={handleVoiceInput}
-              className="bg-white text-red-500 border border-red-500 px-3 py-2 rounded-md hover:bg-red-100 transition"
+              onClick={handleSend}
+              disabled={loading || !message.trim()}
+              className="bg-[#E03C31] text-white p-3 rounded-xl hover:bg-red-700 transition disabled:opacity-50 shadow-md group"
             >
-              {isSpeaking ? "🔊" : "🎤"}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 group-hover:translate-x-1 transition-transform">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+              </svg>
             </button>
           </div>
         </div>
