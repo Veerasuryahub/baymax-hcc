@@ -3,28 +3,47 @@ services:
   - type: web
     name: baymax-backend
     env: node
+    region: oregon
+    plan: free
+    repo: https://github.com/Veerasuryahub/baymax-hcc
+    branch: main
     rootDir: backend
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: node index.js
     envVars:
-      - key: PORT
-        value: 5000
-      - key: MONGO_URI
-        sync: false # User needs to provide this in Render dashboard (e.g., MongoDB Atlas URI)
-      - key: JWT_SECRET
-        generateValue: true
-      - key: FRONTEND_URL
-        value: https://baymax-healthcare-chatbot.netlify.app
+      - key: NODE_ENV
+        value: production
+      # - key: MONGO_URI # User needs to paste this real URI in the render dashboard to completely turn off the dev-memory-fallback
+      #   value: your_real_mongo_uri_here 
 
+  # Frontend React Service
+  - type: web
+    name: baymax-frontend
+    env: static
+    region: oregon
+    plan: free
+    repo: https://github.com/Veerasuryahub/baymax-hcc
+    branch: main
+    rootDir: front
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./front/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: baymax-backend
+          envVarKey: RENDER_EXTERNAL_URL
+          property: host
+        # The URL will be formatted nicely but we might need to append /api manually or adjust VITE_API_URL to handle exactly what render gives
+      
   # Python Bot Service
   - type: web
     name: baymax-bot
     env: python
+    region: oregon
+    plan: free
+    repo: https://github.com/Veerasuryahub/baymax-hcc
+    branch: main
     rootDir: Bot
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
-    envVars:
-      - key: PORT
-        value: 5001
-      - key: ALLOWED_ORIGINS
-        value: https://baymax-healthcare-chatbot.netlify.app
+    startCommand: gunicorn app:app
