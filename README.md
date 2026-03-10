@@ -3,6 +3,9 @@
 Welcome to the **BAYMAX Health Assistant** project! 
 This project is an AI-powered medical assistant that functions like Baymax from the movie *Big Hero 6*. It listens to your symptoms and acts as a virtual triage nurse to predict a possible illness and offer basic treatment suggestions.
 
+## 🌟 Live Demo
+Check out the deployed application: [https://baymax-frontend-8wcq.onrender.com/](https://baymax-frontend-8wcq.onrender.com/)
+
 This document is written so that **anyone**, from an experienced developer to a complete beginner, can easily understand how it works!
 
 ---
@@ -88,3 +91,9 @@ Sample #4 (Allergies or Skin Reactions)
 Sample #5 (Stress/Fatigue)
 
 "I am feeling extremely dizzy, I've lost my appetite, and I have terrible back pain."
+
+---
+
+## 📝 Recent Updates
+- **Homepage UI Refresh:** Changed the blank white screen behavior for the Chat interface to render an aesthetically pleasing Welcome Component when no chat is intentionally selected yet.
+- **Render Deployment:** Successful deployment of frontend on Render. [View App](https://baymax-frontend-8wcq.onrender.com/)

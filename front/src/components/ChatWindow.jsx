@@ -17,7 +17,25 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
 
-  if (!section) return <div className="flex-1 p-6">Select a chat</div>;
+  if (!section) {
+    return (
+      <div className="flex-1 p-6 bg-gray-50 flex items-center justify-center h-full">
+        <div className="text-center bg-white p-12 rounded-3xl shadow-xl max-w-lg border border-gray-100 flex flex-col items-center">
+          <div className="w-24 h-24 bg-[#E03C31] rounded-full flex items-center justify-center text-white font-bold text-5xl mb-6 shadow-lg">
+            B
+          </div>
+          <h2 className="text-3xl font-bold text-gray-800 tracking-wide mb-3">Welcome to BAYMAX</h2>
+          <p className="text-gray-500 mb-8 text-lg">Your AI Healthcare Assistant. Select a chat from the sidebar or start a new one to begin diagnosing symptoms.</p>
+          <div className="flex items-center space-x-2 text-[#E03C31] font-medium bg-red-50 px-6 py-3 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span>Click "New Chat" to start</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleSend = async () => {
     if (message.trim()) {
