@@ -36,8 +36,6 @@ app.get('/health', (req, res) => {
   res.json({ status: 'Backend is running!' });
 });
 
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
 async function connectDB() {
   try {
     console.log('⏳ Attempting to connect to Primary MongoDB...');
@@ -46,15 +44,8 @@ async function connectDB() {
     });
     console.log('✅ MongoDB connected successfully');
   } catch (err) {
-    console.error('⚠️ Primary MongoDB connection failed. Falling back to Memory Server:', err.message);
-    try {
-      const mongoServer = await MongoMemoryServer.create();
-      const memoryUri = mongoServer.getUri();
-      await mongoose.connect(memoryUri);
-      console.log('✅ Connected to MongoDB Memory Server (Local Fallback for Dev)');
-    } catch (memErr) {
-      console.error('❌ Failed to start Memory Server fallback:', memErr);
-    }
+    console.error('❌ MongoDB connection failed:', err.message);
+    process.exit(1);
   }
 }
 
