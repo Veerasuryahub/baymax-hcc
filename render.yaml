@@ -13,8 +13,13 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      # - key: MONGO_URI
-      #   value: your_real_mongo_uri_here 
+      - key: MONGO_URI
+        sync: false # Set this in the Render dashboard!
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: baymax-frontend
+          envVarKey: RENDER_EXTERNAL_URL
 
   # Frontend React Service
   - type: web
@@ -47,4 +52,10 @@ services:
     branch: main
     rootDir: Bot
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: ALLOWED_ORIGINS
+        fromService:
+          type: web
+          name: baymax-frontend
+          envVarKey: RENDER_EXTERNAL_URL
