@@ -13,28 +13,30 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      # - key: MONGO_URI # User needs to paste this real URI in the render dashboard to completely turn off the dev-memory-fallback
+      # - key: MONGO_URI
       #   value: your_real_mongo_uri_here 
 
   # Frontend React Service
   - type: web
     name: baymax-frontend
     env: static
-    region: oregon
     plan: free
     repo: https://github.com/Veerasuryahub/baymax-hcc
     branch: main
     rootDir: front
     buildCommand: npm install && npm run build
-    staticPublishPath: ./front/dist
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
         fromService:
           type: web
           name: baymax-backend
           envVarKey: RENDER_EXTERNAL_URL
-          property: host
-        # The URL will be formatted nicely but we might need to append /api manually or adjust VITE_API_URL to handle exactly what render gives
+      - key: VITE_BOT_URL
+        fromService:
+          type: web
+          name: baymax-bot
+          envVarKey: RENDER_EXTERNAL_URL
       
   # Python Bot Service
   - type: web
