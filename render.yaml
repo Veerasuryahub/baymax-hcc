@@ -14,7 +14,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGO_URI
-        sync: false # Set this in the Render dashboard!
+        value: mongodb+srv://veera:veerasurya@cluster0.cxhtovi.mongodb.net/baymax?retryWrites=true&w=majority&appName=Cluster0
       - key: FRONTEND_URL
         fromService:
           type: web
