@@ -54,7 +54,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen w-screen bg-slate-50 overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div

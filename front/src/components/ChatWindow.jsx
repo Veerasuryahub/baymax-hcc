@@ -16,17 +16,16 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
-
   if (!section) {
     return (
-      <div className="flex-1 p-6 bg-gray-50 flex items-center justify-center h-full">
-        <div className="text-center bg-white p-12 rounded-3xl shadow-xl max-w-lg border border-gray-100 flex flex-col items-center">
-          <div className="w-24 h-24 bg-[#E03C31] rounded-full flex items-center justify-center text-white font-bold text-5xl mb-6 shadow-lg">
+      <div className="flex-1 p-6 bg-slate-50 flex items-center justify-center h-full">
+        <div className="text-center bg-white p-12 rounded-3xl shadow-xl max-w-lg border border-slate-200 flex flex-col items-center">
+          <div className="w-24 h-24 bg-[#E03C31] rounded-full flex items-center justify-center text-white font-bold text-5xl mb-6 shadow-[0_0_20px_rgba(224,60,49,0.3)]">
             B
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 tracking-wide mb-3">Welcome to BAYMAX</h2>
-          <p className="text-gray-500 mb-8 text-lg">Your AI Healthcare Assistant. Select a chat from the sidebar or start a new one to begin diagnosing symptoms.</p>
-          <div className="flex items-center space-x-2 text-[#E03C31] font-medium bg-red-50 px-6 py-3 rounded-full">
+          <h2 className="text-3xl font-bold text-slate-800 tracking-wide mb-3">Welcome to BAYMAX</h2>
+          <p className="text-slate-500 mb-8 text-lg">Your AI Healthcare Assistant. Select a chat from the sidebar or start a new one to begin diagnosing symptoms.</p>
+          <div className="flex items-center space-x-2 text-[#E03C31] font-medium bg-red-50 px-6 py-3 rounded-full border border-red-100">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -134,10 +133,10 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
 
 
   return (
-    <div className="relative w-full bg-gray-50 flex items-center justify-center p-4 h-screen">
+    <div className="relative w-full bg-slate-50 flex items-center justify-center p-4 h-screen">
 
       {/* Chat Window */}
-      <div className="w-full max-w-5xl h-[95vh] bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col border border-gray-100">
+      <div className="w-full max-w-5xl h-[95vh] bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col border border-slate-200">
 
         {/* Title Bar */}
         <div className="bg-[#E03C31] text-white flex items-center px-6 py-4 shadow-md z-10">
@@ -151,8 +150,8 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 p-6 flex flex-col overflow-y-auto bg-gray-50/50">
-          <div className="flex-1 overflow-y-auto mb-4 space-y-6 scrollbar-thin scrollbar-thumb-gray-300">
+        <div className="flex-1 p-6 flex flex-col overflow-y-auto bg-slate-50/50">
+          <div className="flex-1 overflow-y-auto mb-4 space-y-6 scrollbar-thin scrollbar-thumb-slate-300">
             {section.messages.map((msg, index) => (
               <div
                 key={index}
@@ -169,7 +168,7 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
                 <div
                   className={`p-4 rounded-2xl shadow-sm text-[15px] leading-relaxed ${msg.sender === "user"
                     ? "bg-[#E03C31] text-white rounded-br-none"
-                    : "bg-white border border-gray-100 text-gray-800 rounded-bl-none"
+                    : "bg-white border border-slate-200 text-slate-800 rounded-bl-none"
                     }`}
                   dangerouslySetInnerHTML={{
                     __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>')
@@ -178,7 +177,7 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
 
                 {/* User Icon */}
                 {msg.sender === "user" && (
-                  <div className="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center text-sm font-bold ml-3 shadow-md flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center text-sm font-bold ml-3 shadow-md flex-shrink-0">
                     U
                   </div>
                 )}
@@ -189,16 +188,16 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
                 <div className="w-8 h-8 rounded-full bg-[#E03C31] text-white flex items-center justify-center text-sm font-bold mr-3 shadow-md flex-shrink-0">
                   B
                 </div>
-                <div className="bg-white border border-gray-100 text-gray-500 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                <div className="bg-white border border-slate-200 text-slate-500 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2">
+                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="flex items-center space-x-3 bg-white p-2 rounded-2xl shadow-sm border border-gray-200 focus-within:ring-2 focus-within:ring-[#E03C31]/20 focus-within:border-[#E03C31] transition-all">
+          <div className="flex items-center space-x-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-200 focus-within:ring-2 focus-within:ring-[#E03C31]/20 focus-within:border-[#E03C31] transition-all">
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -214,7 +213,7 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
             />
             <button
               onClick={handleVoiceInput}
-              className="text-gray-400 hover:text-[#E03C31] p-2 rounded-full hover:bg-red-50 transition"
+              className="text-slate-400 hover:text-[#E03C31] p-2 rounded-full hover:bg-red-50 transition"
               title="Voice Input"
             >
               {isSpeaking ? (
