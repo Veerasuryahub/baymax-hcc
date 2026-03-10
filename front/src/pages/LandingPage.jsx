@@ -63,9 +63,15 @@ function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section id="home" className="pt-24 min-h-screen bg-red-600 flex flex-col md:flex-row items-center justify-between overflow-hidden relative px-6 md:px-16 py-12">
+      <section id="home" className="pt-24 min-h-screen bg-gradient-to-br from-red-600 via-red-500 to-red-700 flex flex-col md:flex-row items-center justify-center overflow-hidden relative px-6 md:px-16 py-16">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-white rounded-full opacity-5 blur-3xl"></div>
+          <div className="absolute bottom-[-20%] left-[-10%] w-[400px] h-[400px] bg-red-900 rounded-full opacity-20 blur-3xl"></div>
+        </div>
+
         {/* Left Text */}
-        <div className="z-10 max-w-xl text-center md:text-left mt-8 md:mt-0 flex flex-col items-center md:items-start">
+        <div className="z-10 max-w-xl text-center md:text-left mt-8 md:mt-0 flex flex-col items-center md:items-start md:w-1/2">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -74,16 +80,6 @@ function LandingPage() {
           >
             Hello, I'm <br /><span className="text-white drop-shadow-xl">BAYMAX</span>
           </motion.h1>
-
-          {/* Chat bubble */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.2 }}
-            className="absolute right-10 bottom-[28%] bg-white text-red-500 px-5 py-3 rounded-xl shadow-xl hidden md:block"
-          >
-            "Hello! How can I help you today?"
-          </motion.div>
 
           <motion.p
             initial={{ opacity: 0 }}
@@ -108,7 +104,7 @@ function LandingPage() {
             </button>
             <button
               onClick={() => navigate("/auth")}
-              className="border-2 border-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-red-600 hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden group"
+              className="border-2 border-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-red-600 hover:shadow-2xl hover:scale-105 transition-all duration-300"
             >
               Sign Up
             </button>
@@ -117,18 +113,18 @@ function LandingPage() {
 
         {/* Right Side - Baymax Character */}
         <motion.div
-          initial={{ x: 300, opacity: 0 }}
+          initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1 }}
-          className="flex items-end justify-center relative w-full md:w-1/2 mt-12 md:mt-0 h-[400px] md:h-[600px] mx-auto"
+          className="flex items-center justify-center relative md:w-1/2 mt-10 md:mt-0"
         >
           <img
             src={baymaxImg}
             alt="Baymax"
-            className="h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.4)] z-10 hover:scale-105 hover:-translate-y-4 transition-all duration-500 cursor-pointer"
+            className="w-[280px] sm:w-[350px] md:w-[420px] lg:w-[500px] xl:w-[550px] object-contain drop-shadow-[0_20px_60px_rgba(0,0,0,0.35)] z-10 hover:scale-105 transition-transform duration-500 cursor-pointer"
           />
           {/* Soft white glow behind baymax */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-[500px] md:h-[500px] bg-white rounded-full blur-[100px] opacity-30 pointer-events-none"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-white rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
         </motion.div>
       </section>
 
