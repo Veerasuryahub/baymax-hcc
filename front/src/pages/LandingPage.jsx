@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Testimonials from "../components/Testimonials";
-import baymaxImg from "../assets/baymax3d.png";
+import baymaxImg from "../assets/bay.png";
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -120,15 +120,15 @@ function LandingPage() {
           initial={{ x: 300, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1 }}
-          className="flex items-center justify-center relative w-full md:w-1/2 mt-12 md:mt-0 w-[250px] md:w-full mx-auto"
+          className="flex items-center justify-center relative w-full md:w-1/2 mt-16 md:mt-0 mx-auto"
         >
           <img
             src={baymaxImg}
             alt="Baymax"
-            className="w-full max-w-sm md:max-w-lg drop-shadow-[0_20px_50px_rgba(0,0,0,0.4)] z-10 hover:scale-105 hover:-translate-y-4 transition-all duration-500 cursor-pointer object-contain"
+            className="w-full sm:w-[80%] md:w-[120%] lg:w-[130%] xl:w-[150%] max-w-none md:-ml-10 lg:-ml-20 drop-shadow-[0_20px_50px_rgba(0,0,0,0.4)] z-10 hover:scale-105 hover:-translate-y-4 transition-all duration-500 cursor-pointer object-contain overflow-visible"
           />
           {/* Soft white glow behind baymax */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-white rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-[500px] md:h-[500px] bg-white rounded-full blur-[100px] opacity-30 pointer-events-none"></div>
         </motion.div>
       </section>
 
