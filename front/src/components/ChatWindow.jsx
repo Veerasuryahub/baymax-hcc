@@ -4,7 +4,9 @@ import { addMessageToChat, submitReview } from "../api/chatApi";
 import { Star } from "lucide-react";
 import { toast } from "react-toastify";
 
-const BOT_URL = import.meta.env.VITE_BOT_URL || "http://localhost:5001";
+let __BOT_URL = import.meta.env.VITE_BOT_URL || "http://localhost:5001";
+if (__BOT_URL.endsWith('/')) __BOT_URL = __BOT_URL.slice(0, -1);
+const BOT_URL = __BOT_URL;
 
 const ChatWindow = ({ section, sectionIndex, refresh }) => {
   const [message, setMessage] = useState("");
@@ -148,8 +150,8 @@ const ChatWindow = ({ section, sectionIndex, refresh }) => {
                 {/* Message Bubble */}
                 <div
                   className={`p-4 rounded-2xl shadow-sm text-[15px] leading-relaxed ${msg.sender === "user"
-                      ? "bg-[#E03C31] text-white rounded-br-none"
-                      : "bg-white border border-gray-100 text-gray-800 rounded-bl-none"
+                    ? "bg-[#E03C31] text-white rounded-br-none"
+                    : "bg-white border border-gray-100 text-gray-800 rounded-bl-none"
                     }`}
                   dangerouslySetInnerHTML={{
                     __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>')
