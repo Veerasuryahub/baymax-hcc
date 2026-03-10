@@ -20,7 +20,6 @@ services:
   - type: web
     name: baymax-frontend
     env: static
-    plan: free
     repo: https://github.com/Veerasuryahub/baymax-hcc
     branch: main
     rootDir: front
