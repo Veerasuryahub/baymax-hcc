@@ -42,20 +42,21 @@ def extract_symptoms_from_text(text, known_symptoms):
     """
     text = text.lower().strip()
     text = re.sub(r'[^\w\s]', ' ', text)  # Remove punctuation
-    words = text.split()
+    words = set(re.findall(r'\b\w+\b', text)) # Use set for faster O(1) lookups
     
     matched = []
     for symptom in known_symptoms:
-        symptom_phrase = symptom.replace('_', ' ')
-        symptom_words = set(symptom_phrase.split())
+        clean_symptom = symptom.lower().strip().replace('_', ' ')
+        symptom_words = set(re.findall(r'\b\w+\b', clean_symptom))
         
-        # Match if any significant word of the symptom is within the user's text
-        if any(w in words for w in symptom_words if len(w) > 3): 
+        # 1. Exact string matching (e.g. "skin rash" inside "i have a skin rash")
+        if clean_symptom in text:
             matched.append(symptom)
             continue
             
-        # Or check exact string overlap
-        if symptom_phrase in ' '.join(words):
+        # 2. Key word heuristic: match if ANY word of the symptom is in user text
+        # (Exclude common stop words if necessary, but here we check significance by length > 2)
+        if any(w in words for w in symptom_words if len(w) > 2): 
             matched.append(symptom)
 
     return list(set(matched))
@@ -87,47 +88,48 @@ def predict():
         if not input_text or not isinstance(input_text, str):
             return jsonify({"error": "Invalid input. Please provide a sentence."}), 400
 
-        # Limit input length to prevent abuse
-        if len(input_text) > 1000:
-            return jsonify({"error": "Input too long. Please keep it under 1000 characters."}), 400
-
         # Step 1: Extract symptoms from the sentence
-        known_symptoms = [s.lower() for s in mlb.classes_]
-        filtered_symptoms = extract_symptoms_from_text(input_text, known_symptoms)
+        classes = [s for s in mlb.classes_] # raw class names (e.g. ' itching', 'skin_rash')
+        filtered_symptoms = extract_symptoms_from_text(input_text, classes)
 
         print(f"🔹 Found Symptoms: {filtered_symptoms}")
 
         if not filtered_symptoms:
-            return jsonify({"error": "No recognizable symptoms found in the sentence."}), 400
+            return jsonify({"error": "I couldn't identify specific medical symptoms in your message. Could you please describe your symptoms more specifically (e.g., 'fever', 'headache', 'skin rash')?"}), 400
 
         # Step 2: Ask the ML model to predict what the disease is
-        X_input = mlb.transform([filtered_symptoms])
-        X_input = scaler.transform(X_input)
-        predictions = model.predict(X_input)
+        try:
+            X_input = mlb.transform([filtered_symptoms])
+            X_input = scaler.transform(X_input)
+            predictions = model.predict(X_input)
 
-        predicted_class = np.argmax(predictions, axis=1)
-        disease_name = encoder.inverse_transform(predicted_class)[0]
-
-        print(f"🔹 Predicted Disease: {disease_name}")
+            predicted_class = np.argmax(predictions, axis=1)
+            disease_name = encoder.inverse_transform(predicted_class)[0]
+            print(f"🔹 Predicted Disease: {disease_name}")
+        except Exception as pred_err:
+            print(f"❌ Prediction Error: {pred_err}")
+            return jsonify({"error": "Our diagnostic engine failed to process these symptoms. Please try rephrasing."}), 500
 
         # Step 3: Get treatment advice from Wikipedia
         try:
-            summary = wikipedia.summary(f"{disease_name} symptoms and treatment", sentences=3)
+            # Clean up disease name for better wiki search
+            search_query = disease_name.replace('_', ' ').strip()
+            summary = wikipedia.summary(f"{search_query} medical condition", sentences=3)
             treatment = summary
         except Exception as e:
             print(f"Wikipedia query error: {e}")
-            treatment = f"Common treatments for {disease_name} involve medical consultation. Please see a doctor immediately."
+            treatment = f"Common treatments for {search_query} involve rest, hydration, and professional medical consultation. Please see a doctor immediately for a formal diagnosis."
 
         # Return the response
         return jsonify({
-            "predicted_disease": disease_name,
-            "extracted_symptoms": filtered_symptoms,
+            "predicted_disease": disease_name.replace('_', ' ').strip().title(),
+            "extracted_symptoms": [s.strip().replace('_', ' ') for s in filtered_symptoms],
             "treatment_recommendation": treatment
         })
 
     except Exception as e:
-        print(f"❌ Error: {str(e)}")
-        return jsonify({"error": "An internal error occurred. Please try again."}), 500
+        print(f"❌ Global Error: {str(e)}")
+        return jsonify({"error": "An internal error occurred. Please try again later."}), 500
 
 # Run Server
 if __name__ == '__main__':

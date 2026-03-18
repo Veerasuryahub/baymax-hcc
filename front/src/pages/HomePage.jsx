@@ -96,6 +96,7 @@ const HomePage = () => {
           section={sections[currentSectionIndex]}
           sectionIndex={currentSectionIndex}
           refresh={refreshChats}
+          onNewChat={handleNewChat}
         />
       </div>
     </div>
