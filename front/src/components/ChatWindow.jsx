@@ -299,5 +299,3 @@ const ChatWindow = ({ section, sectionIndex, refresh, onNewChat }) => {
 };
 
 export default ChatWindow;
-
-export default ChatWindow;
