@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from flask_cors import CORS
 import re
-import wikipedia
+import requests
 
 # Load environment variables
 load_dotenv()
@@ -114,8 +114,45 @@ def predict():
         try:
             # Clean up disease name for better wiki search
             search_query = disease_name.replace('_', ' ').strip()
-            summary = wikipedia.summary(f"{search_query} medical condition", sentences=3)
-            treatment = summary
+            
+            # Use requests for a fast, reliable API call with timeout
+            wiki_url = f"https://en.wikipedia.org/w/api.php"
+            params = {
+                "action": "query",
+                "format": "json",
+                "prop": "extracts",
+                "exintro": True,
+                "explaintext": True,
+                "titles": f"{search_query} medical condition"
+            }
+            resp = requests.get(wiki_url, params=params, timeout=3.0)
+            data = resp.json()
+            
+            pages = data.get("query", {}).get("pages", {})
+            extract = ""
+            for page_id, page_info in pages.items():
+                if page_id != "-1":
+                    extract = page_info.get("extract", "")
+                    break
+            
+            if not extract:
+                # Fallback to just the disease name without "medical condition"
+                params["titles"] = search_query
+                resp = requests.get(wiki_url, params=params, timeout=3.0)
+                data = resp.json()
+                pages = data.get("query", {}).get("pages", {})
+                for page_id, page_info in pages.items():
+                    if page_id != "-1":
+                        extract = page_info.get("extract", "")
+                        break
+            
+            if extract:
+                # Take first 3 sentences
+                sentences = extract.split('. ')
+                treatment = '. '.join(sentences[:3]) + "."
+            else:
+                treatment = f"Common treatments for {search_query} involve rest, hydration, and professional medical consultation. Please see a doctor immediately for a formal diagnosis."
+                
         except Exception as e:
             print(f"Wikipedia query error: {e}")
             treatment = f"Common treatments for {search_query} involve rest, hydration, and professional medical consultation. Please see a doctor immediately for a formal diagnosis."
